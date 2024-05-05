@@ -24,7 +24,7 @@ def main():
     plt.plot(data, linestyle='dotted')
     plt.show()
 
-    # Calculating the Pearson Correlation Coefficient (PCC) Using SciPy - HERE (Not correct)
+    # Calculating the Pearson Correlation Coefficient (PCC) Using SciPy
     print([i for i in range(len(data))])
     ratio, p_value = pearsonr(data, [i for i in range(len(data))])
     print(ratio, p_value)
