@@ -1,6 +1,7 @@
 
 def num_len(num: int) -> int:
     """Returns an int representing the length of the @num param."""
+
     return 1 + num_len(num // 10) if num > 0 else 0
 
 

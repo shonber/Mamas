@@ -24,6 +24,9 @@ def is_lexical_order(st: str):
 
 if __name__ == "__main__":
     print(is_sorted_polyndrom("edde"))
+    print(is_sorted_polyndrom("edde"))
+    print(is_sorted_polyndrom("e11e"))
+
     print(is_sorted_polyndrom("radar"))
     print(is_sorted_polyndrom("radar radar"))
     print(is_sorted_polyndrom("deed deed"))
@@ -32,4 +35,5 @@ if __name__ == "__main__":
     print(is_sorted_polyndrom("deed"))
     print(is_sorted_polyndrom("abccba"))
     print(is_sorted_polyndrom("abcdcba"))
-
+    print(is_sorted_polyndrom("1ee1"))
+    print(is_sorted_polyndrom("1e e1"))
