@@ -25,9 +25,10 @@ def main():
     plt.show()
 
     # Calculating the Pearson Correlation Coefficient (PCC) Using SciPy
+    # TODO: Fix this, it doesnt return the correct ratio
     print([i for i in range(len(data))])
     ratio, p_value = pearsonr(data, [i for i in range(len(data))])
-    print(ratio, p_value)
+    print(f"[!] The ratio is: {ratio}")
 
 
 if __name__ == "__main__":
