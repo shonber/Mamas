@@ -5,49 +5,16 @@ namespace MyProject;
 
 public class NumericalExpression
 {
+    private static readonly string[] unitsArray = new string[] { "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
+    private static readonly string[] tensArray = new string[] { "Zero", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety" };
+
+    private enum MultiplierTexts { Hundred, Thousand, Million, Billion, Trillion };
+
+
+    private static long[] multipliers =  new long[] { 100, 1000, 1000000, 1000000000, 1000000000000 };
+    private static long maxNumber = 999000000000000;
+
     private long number;
-    private static readonly long MAX_NUMBER = 999000000000000;
-    private static readonly Dictionary<string, string> digitNumbers = new Dictionary<string, string>{
-        {"0", "Zero"},
-        {"1", "One"},
-        {"2", "Two"},
-        {"3", "Three"},
-        {"4", "Four"},
-        {"5", "Five"},
-        {"6", "Six"},
-        {"7", "Seven"},
-        {"8", "Eight"},
-        {"9", "Nine"},
-    };
-
-    private static readonly Dictionary<string, string> teenNumbers = new Dictionary<string, string>{
-        {"10", "Ten"},
-        {"11", "Eleven"},
-        {"12", "Twelve"},
-        {"13", "Thirteen"},
-        {"14", "Fourteen"},
-        {"15", "Fifteen"},
-        {"16", "Sixteen"},
-        {"17", "Seventeen"},
-        {"18", "Eighteen"},
-        {"19", "Nineteen"},
-    };
-
-    private static readonly Dictionary<string, string> tensNumbers = new Dictionary<string, string>{
-        {"20", "Twenty"},
-        {"30", "Thirty"},
-        {"40", "Forty"},
-        {"50", "Fifty"},
-        {"60", "Sixty"},
-        {"70", "Seventy"},
-        {"80", "Eighty"},
-        {"90", "Ninety"},
-        {"100", "Hundred"},
-        {"1000", "Thousand"},
-        {"1000000", "Million"},
-        {"1000000000", "Billion"},
-        {"1000000000000", "Trillion"},
-    };
 
     public NumericalExpression (long n){
         this.number = n;
@@ -58,47 +25,54 @@ public class NumericalExpression
     } 
 
     public static int SumLetters (long n){
-        int counter = 0;
+        if (n > maxNumber)
+            return -1;
 
-        return counter;
+        int charCounter = 0;
+        for (long i = 0; i <= n; i++)
+        {
+            string word = ConvertToString(i).Replace(" ", "");
+            Console.WriteLine(word);
+            charCounter += word.Length;
+        }
+
+        return charCounter;
     } 
 
-    public static string ConvertToString (long n){
-        if (n > MAX_NUMBER)
-            return "";
+    private static string ConvertToString (long n){
+        if (n > maxNumber)
+            return "[-] Number is too big.";
+
+        if (n == 0)
+            return "Zero";
 
         string retVal = "";
 
-        string numberInText = n.ToString();
-        int numberLength = numberInText.Length;
+        for (int i = multipliers.Length - 1; i >= 0 ; i--)
+        {
 
-        int index = 0;
-        int digit = 0;
-        int fullNumber = 0;
-        double modifiers = 0;
-
-        while (n > 0){
-            // TODO: Fix the code below
-            modifiers = Math.Pow(10, numberLength - index - 1);
-            digit = (int)(n / modifiers);
-
-            fullNumber = (int) modifiers * digit;
-
-            Console.WriteLine(fullNumber);
-            // retVal += numbersInWords[numberInText[index].ToString()];
-            // retVal += " ";
-            // retVal += numbersInWords[position.ToString()];
-            // retVal += " ";
-            
-            index ++;
-            n /= 10;
+            if ((n / multipliers[i]) > 0)
+            {
+                retVal += ConvertToString(n / multipliers[i]) + $" {(MultiplierTexts)i} ";
+                n %= multipliers[i];
+            }            
         }
 
-        return retVal;
+
+        if (n > 0){
+            if (n < 20)
+                retVal += unitsArray[n];
+            else{
+                retVal += tensArray[(n / 10)];
+                if ((n % 10) > 0)
+                    retVal += " " + unitsArray[(n % 10)];
+            }
+        }
+        return retVal.Replace("  ", " ");
     } 
 
     public override string ToString()
     {  
-        return $"";
+        return ConvertToString(this.number);
     }
 }

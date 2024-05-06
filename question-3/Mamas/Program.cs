@@ -50,19 +50,14 @@ class Program
         // Console.WriteLine(ls.GetMaxNode());
         // Console.WriteLine(ls.GetMinNode());
 
+
         // *********************************
         // NumericalExpression Class
         // *********************************
 
-        // NumericalExpression ne = new(548);
-        // for (int i = 0; i <= 100; i++)
-        // {
-        //     Console.WriteLine(NumericalExpression.ConvertToString(i));
-        // }
-        // Console.WriteLine(NumericalExpression.ConvertToString(999000000000000));
-        // Console.WriteLine(NumericalExpression.ConvertToString(999000000000001));
-
-        NumericalExpression.ConvertToString(15);
+        // NumericalExpression ne = new(10);
+        // Console.WriteLine(ne);
+        Console.WriteLine(NumericalExpression.SumLetters(25));
 
     }
 }
