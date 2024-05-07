@@ -66,8 +66,22 @@ class Program
         // NumericalExpression ne2 = new(99900000000000000);
         // Console.WriteLine(ne2);
 
-        Console.WriteLine(NumericalExpression.GetSelectedLanguage());
+        // Console.WriteLine(NumericalExpression.GetSelectedLanguage());
+        NumericalExpression ne = new(548);
+        Console.WriteLine(ne);
+
         NumericalExpression.SelectLanguage();
-        Console.WriteLine(NumericalExpression.GetSelectedLanguage());
+        // Console.WriteLine(NumericalExpression.GetSelectedLanguage());
+        Console.WriteLine(ne);
+
+        NumericalExpression.AddLanguage();
+        Console.WriteLine(ne);
+
+        NumericalExpression.SelectLanguage();
+        Console.WriteLine(ne);
+
+        NumericalExpression.SelectLanguage();
+        Console.WriteLine(ne);
+
     }
 }
