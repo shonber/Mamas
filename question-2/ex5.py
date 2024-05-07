@@ -1,11 +1,13 @@
-import math
+from mpmath import mp
 
 
 def reverse_n_pi_digits(n: int) -> str:
-    """Returns the @n amount of digits of reversed PI as str."""
+    """Returns the @n: int amount of digits of a reversed PI as str."""
 
-    return str(math.pi)[::-1][0:n]
+    mp.dps = 10 if n < 10 else 10 + n
+    return str(mp.pi)[-n:][::-1]
 
 
 if __name__ == "__main__":
-    print(reverse_n_pi_digits(3))
+    print(reverse_n_pi_digits(20))  # Worked
+    print(reverse_n_pi_digits(10000))  # Worked

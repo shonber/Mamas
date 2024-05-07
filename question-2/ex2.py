@@ -1,9 +1,9 @@
 
 def pythagorean_triplet_by_sum(sum: int):
-    """Receives @sum parameter of type int for implementing Euclid's formula."""
+    """Receives @sum: int for implementing Euclid's formula."""
 
-    if sum < 0:
-        print("[-] The @sum parameter must be a natural number.")
+    if sum < 0 or not isinstance(sum, int):
+        print("[-] @sum must be a natural number.")
         return
 
     c: int = 0
@@ -31,5 +31,7 @@ def pythagorean_triplet_by_sum(sum: int):
 
 
 if __name__ == "__main__":
+    pythagorean_triplet_by_sum(3.14)  # worked
+
     for i in range(100):
         pythagorean_triplet_by_sum(i)  # worked
