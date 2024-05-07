@@ -1,5 +1,3 @@
-using System.Reflection.Metadata.Ecma335;
-
 namespace MyProject;
 
 public class Node
@@ -21,7 +19,8 @@ public class Node
         get { return val; }
         set { val = value; }
     }
-    public Node Next {
+
+    public Node? Next {
         get { return next; }
         set { next = value; }
     }

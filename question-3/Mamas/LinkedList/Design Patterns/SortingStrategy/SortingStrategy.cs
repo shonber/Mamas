@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Diagnostics.Metrics;
-using System.Runtime.InteropServices;
 
 namespace MyProject;
 
 
-public interface SortingStrategy {
-    void Sort(Node node);
+public interface ISortingStrategy {
+    // Sort method receives @node: Node and performs the sort algorithm on it.
+    void Sort(Node head, Node tail);
 }

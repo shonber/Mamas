@@ -1,28 +1,25 @@
-using System.Collections;
-using System.Diagnostics.Metrics;
-using System.Runtime.InteropServices;
 
 namespace MyProject;
 
 public class Context {
-    private SortingStrategy? sortingStrategy;
+    private ISortingStrategy? ISortingStrategy;
  
      public Context() {
-        this.sortingStrategy = null;
+        this.ISortingStrategy = null;
     }
 
-    public Context(SortingStrategy sortingStrategy) {
-        this.sortingStrategy = sortingStrategy;
+    public Context(ISortingStrategy sortingStrategy) {
+        this.ISortingStrategy = sortingStrategy;
     }
     
-    public void SetSortingStrategy(SortingStrategy sortingStrategy) {
-        this.sortingStrategy = sortingStrategy;
+    public void SetSortingStrategy(ISortingStrategy sortingStrategy) {
+        this.ISortingStrategy = sortingStrategy;
     }
  
-    public void performSort(Node node) {
-        if (this.sortingStrategy == null)
+    public void PerformSort(Node head, Node tail) {
+        if (this.ISortingStrategy == null)
             return;
             
-        sortingStrategy.Sort(node);
+        ISortingStrategy.Sort(head, tail);
     }
 }

@@ -10,45 +10,45 @@ class Program
         // Node and LinkedList Classes
         // *********************************
 
-        // Node n1 = new(1);
-        // LinkedList<int> ls = new();
+        LinkedList<int> ls = new();
+        Console.WriteLine(ls);
 
-        // ls.Append(2);
-        // ls.Append(5);
-        // ls.Append(2);
-        // ls.Append(5);
+        ls.Append(3);
+        ls.Append(5);
+        ls.Append(2);
+        ls.Append(8);
+        Console.WriteLine(ls);
 
-        // Console.WriteLine(ls);
+        ls.Prepend(-23);
+        ls.Prepend(7);
+        ls.Prepend(-1);
+        ls.Prepend(-2);
+        Console.WriteLine(ls);
 
-        // ls.Prepend(-1);
-        // ls.Prepend(-23);
-        // ls.Prepend(-2);
-        // ls.Prepend(4222);
-        // ls.Prepend(0);
-        // ls.Prepend(-44121);
+        Console.WriteLine(ls.Pop());
+        Console.WriteLine(ls);
 
-        // Console.WriteLine(ls);
+        Console.WriteLine(ls.Unqueue());
+        Console.WriteLine(ls);
 
-        // Console.WriteLine(ls.Pop());
-        // Console.WriteLine(ls);
+        Console.WriteLine(ls.GetMaxNode());
+        Console.WriteLine(ls.GetMinNode());
 
-        // Console.WriteLine(ls.Unqueue());
-        // Console.WriteLine(ls);
 
-        // var list = ls.ToList();
-        // foreach (var node in list)
-        // {
-        //     Console.WriteLine(node);
-        // }
+        IEnumerable<int> list = ls.ToList();
+        foreach (var value in list)
+        {
+            Console.WriteLine(value);
+        }
 
-        // bool isCircularCheck = ls.IsCircular();
-        // Console.WriteLine(isCircularCheck);
+        bool isCircularCheck = ls.IsCircular();
+        Console.WriteLine(isCircularCheck);
 
-        // Console.WriteLine(ls);
-        // ls.Sort();
+        ls.Sort();
+        Console.WriteLine(ls);
 
-        // Console.WriteLine(ls.GetMaxNode());
-        // Console.WriteLine(ls.GetMinNode());
+        Console.WriteLine(ls.GetMaxNode());
+        Console.WriteLine(ls.GetMinNode());
 
 
         // *********************************
