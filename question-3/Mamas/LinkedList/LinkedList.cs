@@ -8,12 +8,18 @@ public class LinkedList<T>
 {
     public Node? head;
     public Node? tail;
+    public Node? minNode;
+    public Node? maxNode;
 
     private Context sortingContext;
 
     public LinkedList(){
         this.head = null;
         this.tail = this.head;
+
+        this.minNode = this.head;
+        this.maxNode = this.head;
+
         this.sortingContext = new Context(new MergeSortStrategy());
     }
 
@@ -22,19 +28,28 @@ public class LinkedList<T>
 
         this.head = new_node;
         this.tail = this.head;
+
+        this.minNode = this.head;
+        this.maxNode = this.head;
+
         this.sortingContext = new Context(new MergeSortStrategy());
     }
 
 
     public void Append(int n){
         Node new_node = new(n);
-
+        
         if (this.head == null){
             this.head = new_node;
             this.tail = this.head;
+
+            this.minNode = this.head;
+            this.maxNode = this.head;
         }else{
             this.tail.Next = new_node;
             this.tail = new_node;
+
+            checkMinMaxNode(this.tail);
         }
     }
 
@@ -47,11 +62,14 @@ public class LinkedList<T>
         if (this.head == null){
             this.head = new_node;
             this.tail = this.head;
+
+            this.minNode = this.head;
+            this.maxNode = this.head;
         }else{
             this.head = new_node;
+
+            checkMinMaxNode(this.head);
         }
-
-
     }
 
     public int? Pop(){
@@ -67,6 +85,15 @@ public class LinkedList<T>
             newTail = newTail.Next;
         }
 
+        if (this.tail == this.maxNode){
+            this.maxNode = newTail;
+            updateMaxNode();
+        }
+
+        else if (this.tail == this.minNode){
+            this.minNode = newTail;
+            updateMinNode();
+        }
 
         newTail.Next = null;
         this.tail = newTail;
@@ -81,6 +108,16 @@ public class LinkedList<T>
 
         int oldHeadValue = this.head.Value;
         Node newHead = this.head.Next;
+
+        if (this.head == this.maxNode){
+            this.maxNode = newHead;
+            updateMaxNode();
+        }
+
+        else if (this.head == this.minNode){
+            this.minNode = newHead;
+            updateMinNode();
+        }
 
         this.head.Next = null;
         this.head = newHead;
@@ -111,32 +148,45 @@ public class LinkedList<T>
         this.sortingContext.performSort(this.head);
     }
 
-    public Node GetMaxNode(){
-        Node tempNode = Clone(this.head);
-        this.sortingContext.performSort(tempNode);
+    public Node? GetMaxNode(){
+        return this.maxNode;
+    }
 
-        while (tempNode.Next != null){
-            tempNode = tempNode.Next;
+    public Node? GetMinNode(){
+        return this.minNode;
+    }
+
+    private void checkMinMaxNode(Node node){
+        if (node.Value > this.maxNode.Value)
+            this.maxNode = node;
+        else if (node.Value < this.minNode.Value)
+            this.minNode = node;
+    }
+
+    private void updateMinNode(){
+        Node tempHead = this.head;
+        Node newMinNode = this.minNode;
+
+        while (tempHead.Next != null){
+            if (tempHead.Value < newMinNode.Value)
+                newMinNode = tempHead;
+            tempHead = tempHead.Next;
         }
 
-        return tempNode;
+        this.minNode = newMinNode;
     }
 
-    public Node GetMinNode(){
-        Node tempNode = Clone(this.head);
-        this.sortingContext.performSort(tempNode);
+    private void updateMaxNode(){
+        Node tempHead = this.head;
+        Node newMaxNode = this.maxNode;
 
-        return tempNode;
-    }
+        while (tempHead.Next != null){
+            if (tempHead.Value > newMaxNode.Value)
+                newMaxNode = tempHead;
+            tempHead = tempHead.Next;
+        }
 
-    public Node Clone(Node head){
-        if (head == null)
-            return null;
-
-        Node retVal = new(head.Value);
-        retVal.Next = Clone(head.Next);
-
-        return retVal;
+        this.maxNode = newMaxNode;
     }
 
     public override string ToString()
