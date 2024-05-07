@@ -55,9 +55,19 @@ class Program
         // NumericalExpression Class
         // *********************************
 
-        // NumericalExpression ne = new(10);
+        // NumericalExpression ne = new(25);
         // Console.WriteLine(ne);
-        Console.WriteLine(NumericalExpression.SumLetters(25));
 
+        // NumericalExpression ne1 = new(999000000000001);
+        // Console.WriteLine(ne1);
+
+        // NumericalExpression.SetMaxNumber();
+
+        // NumericalExpression ne2 = new(99900000000000000);
+        // Console.WriteLine(ne2);
+
+        Console.WriteLine(NumericalExpression.GetSelectedLanguage());
+        NumericalExpression.SelectLanguage();
+        Console.WriteLine(NumericalExpression.GetSelectedLanguage());
     }
 }
