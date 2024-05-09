@@ -129,21 +129,74 @@ public class Board
         int currentValue;
 
         sb.Append('\n');
-        for(int col = 0; col < Data.GetLength(0); col++){
-            sb.Append("+----+----+----+----+\n|");
-            for(int row = 0; row < Data.GetLength(1); row++){
-                currentValue = Data[col, row];
+        for(int row = 0; row < Data.GetLength(0); row++){
 
-                if (currentValue == -1)
-                    sb.Append($" {currentValue} |");
-                else
-                    sb.Append($"  {currentValue} |");
+            sb.Append("\n+------------+------------+------------+------------+\n");
+
+            sb.Append("|            |            |            |            |\n");
+            for(int col = 0; col < Data.GetLength(1); col++){
+                currentValue = Data[row, col];
+                BoardNumbersManager(sb, currentValue);
+                
+                if(col == boardSize.Width - 1){
+                    sb.Append('|');
+                }
+
             }
-            sb.Append('\n');
+            sb.Append("\n|            |            |            |            |");
+            // sb.Append("\n|                                                   |");
         }
-        sb.Append("+----+----+----+----+\n");
+
+        sb.Append("\n+------------+------------+------------+------------+\n");
 
         return sb.ToString();
+    }
+
+    private static void BoardNumbersManager(StringBuilder sb, int currentValue){
+        // The method will color and even the spaces for the console printed board depending on the currentValue: int and append it to the sb: StringBuilder.
+
+        const int slotLength = 12;
+        int numLength = (int) Math.Floor(Math.Log10(currentValue) + 1);
+
+        if (currentValue == -1){
+            sb.Append($"|     {currentValue}     ");
+        }else{
+            switch(numLength){
+                case 6:
+                    sb.Append($"|   {currentValue}   ");
+                    break;
+
+                case 5:
+                    sb.Append($"|    {currentValue}   ");
+
+                    break;
+
+                case 4:
+                    sb.Append($"|    {currentValue}    ");
+
+                    break;
+
+                case 3:
+                    sb.Append($"|    {currentValue}     ");
+
+                    break;
+
+                case 2:
+                    sb.Append($"|     {currentValue}     ");
+
+                    break;
+
+                case 1:
+                    sb.Append($"|      {currentValue}     ");
+
+                    break;
+
+                default:
+                    sb.Append($"|    {currentValue}  ");
+
+                    break;
+            }
+        }
     }
 
     private static GeneratedBlock GenerateBlock(){
