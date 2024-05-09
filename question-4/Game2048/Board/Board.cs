@@ -15,6 +15,10 @@ public class Board
     private bool[] fullSlots;
 
     private BoardSize boardSize;
+    private GameStatus status;
+    private bool wonTheGame;
+
+    private readonly int winningScore = 2048;
 
     public Board(){
         boardSize = new BoardSize(4, 4);
@@ -30,13 +34,30 @@ public class Board
         protected set { data = value; }
     }
 
+    public bool WonTheGame {
+        get { return wonTheGame; }
+        protected set { wonTheGame = value; }
+    }
+
+    public GameStatus Status {
+        get { return status; }
+        protected set { status = value; }
+    }
+
     public void Start(){
         // The method will start the game and place two numbers (2 or 4) on empty slots.
+        Console.ForegroundColor = ConsoleColor.DarkCyan; 
+        Console.Write("SCORE: 0");
+        Console.ForegroundColor = ConsoleColor.Gray; 
 
         for (int i = 0; i < 2; i++)
         {
             InsertNewRandomBlock();
         }
+
+        Console.ForegroundColor = ConsoleColor.Blue; 
+        Console.WriteLine(PrintBoard());
+        Console.ForegroundColor = ConsoleColor.Gray; 
     }
 
     public int Move(Direction direction){
@@ -50,7 +71,7 @@ public class Board
         * No matter when, the method will always return the score gathered from the move.
         */
 
-        Console.WriteLine(direction);
+        Status = GameStatus.Idle;
 
         switch (direction)
         {
@@ -145,42 +166,35 @@ public class Board
         // The method adds to the board a random generated block at a random generated location.
 
         GeneratedBlock generated_block;
-
         generated_block = GenerateBlock();
-        bool emptySlot = true;
 
-        // This slot is occupied
-        if (this.fullSlots[generated_block.Col + generated_block.Row * boardSize.Width]){
-            emptySlot = false;
+        bool foundEmptySlot = false;
+
+        // Check if there are free slots.
+        foreach (var item in this.fullSlots)
+        {
+            if (!item)
+                foundEmptySlot = true;
         }
 
-        // search for a different location.
-        int counter = 1;
-        int size = boardSize.Width * boardSize.Height;
-        bool possibleCombinationsFlag;
-
-        while (!emptySlot){
-            if (counter == size){
-                // No unoccupied slot found.
-                Console.WriteLine("No space found");
-
-                // Check if there are any combinations
-                possibleCombinationsFlag = CheckPossibleCombinations();
-                if (!possibleCombinationsFlag){
-                    EndGame();
-                }
-
-                return;
+        if (!foundEmptySlot){
+            // no empty slots
+            // check for combinations
+            bool possibleCombinationsFlag = CheckPossibleCombinations();
+            if (!possibleCombinationsFlag){
+                EndGame();
             }
 
-            // Unoccupied slot is found.
+            return;
+        }
+
+        // Grab random free slot.
+        foundEmptySlot = false;
+        while (!foundEmptySlot){
             generated_block = GenerateBlock();
-
             if (!this.fullSlots[generated_block.Col + generated_block.Row * boardSize.Width]){
-                emptySlot = true;
+                foundEmptySlot = true;
             }
-
-            counter++;
         }
 
         Data[generated_block.Row, generated_block.Col] = generated_block.Value;
@@ -372,6 +386,11 @@ public class Board
 
                             // add their sum to the score.
                             score += mergeSum;
+
+                            // Check if the user won
+                            if (mergeSum == winningScore && Status != GameStatus.Win)
+                                WinGame();
+
                         }else if((targetBlock == -1) && (currentBlock != targetBlock)){
                             // Move current to target.
                             Data[row - 1, col] = currentBlock;
@@ -385,6 +404,10 @@ public class Board
 
                             fullSlotIndex = col + (row - 1) * boardSize.Width;
                             this.fullSlots[fullSlotIndex] = true;
+
+                            // // Check if the user won
+                            // if (Status == GameStatus.Win)
+                            //     WinGame();
                         }
                     }
                 }
@@ -426,6 +449,11 @@ public class Board
 
                             // add their sum to the score.
                             score += mergeSum;
+
+                            // Check if the user won
+                            if (mergeSum == winningScore && Status != GameStatus.Win)
+                                WinGame();
+
                         }else if((targetBlock == -1) && (currentBlock != targetBlock)){
                             // Move current to target.
                             Data[row + 1, col] = currentBlock;
@@ -439,6 +467,11 @@ public class Board
 
                             fullSlotIndex = col + (row + 1) * boardSize.Width;
                             this.fullSlots[fullSlotIndex] = true;
+
+                            // // Check if the user won
+                            // if (Status == GameStatus.Win)
+                            //     WinGame();
+
                         }
                     }
                 }
@@ -480,6 +513,11 @@ public class Board
 
                             // add their sum to the score.
                             score += mergeSum;
+
+                            // Check if the user won
+                            if (mergeSum == winningScore && Status != GameStatus.Win)
+                                WinGame();
+
                         }else if((targetBlock == -1) && (currentBlock != targetBlock)){
                             // Move current to target.
                             Data[row, col - 1] = currentBlock;
@@ -493,6 +531,10 @@ public class Board
 
                             fullSlotIndex = col - 1 + row * boardSize.Width;
                             this.fullSlots[fullSlotIndex] = true;
+
+                            // // Check if the user won
+                            // if (Status == GameStatus.Win)
+                            //     WinGame();
                         }
                     }
                 }
@@ -534,6 +576,11 @@ public class Board
 
                             // add their sum to the score.
                             score += mergeSum;
+
+                            // Check if the user won
+                            if (mergeSum == winningScore && Status != GameStatus.Win)
+                                WinGame();
+
                         }else if((targetBlock == -1) && (currentBlock != targetBlock)){
                             // Move current to target.
                             Data[row, col + 1] = currentBlock;
@@ -547,6 +594,10 @@ public class Board
 
                             fullSlotIndex = col + 1 + row * boardSize.Width;
                             this.fullSlots[fullSlotIndex] = true;
+
+                            // // Check if the user won
+                            // if (Status == GameStatus.Win)
+                            //     WinGame();
                         }
                     }
                 }
@@ -557,10 +608,16 @@ public class Board
     }
 
     public void EndGame(){
-        // The method will end the current running game.
+        // The method will end the current running game - Lost.
 
-        // TODO: End the game.
-        Console.WriteLine("The game has ended.");
+        Status = GameStatus.Lose;
+    }
+
+    public void WinGame(){
+        // The method will alert the client that they won.
+
+        Status = GameStatus.Win;
+        WonTheGame = true;
     }
 
     public override string ToString()
