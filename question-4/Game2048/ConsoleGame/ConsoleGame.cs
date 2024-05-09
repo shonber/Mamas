@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Runtime.CompilerServices;
 
 namespace Game2048;
@@ -9,8 +10,10 @@ public class ConsoleGame : Game
 
     public override void StartGame(){
         // Overriding the inherited method.
-        Console.ForegroundColor = ConsoleColor.Green; 
-        Console.ForegroundColor = ConsoleColor.Gray; 
+ 
+        Console.BackgroundColor = ConsoleColor.Black;
+        Console.CursorVisible = false;
+        Console.Title = "Is it only 2048 . . ?";
 
         Console.Clear();
         GameBoard.Start();
