@@ -8,11 +8,7 @@ class Program
 {
     static void Main(string[] args)
     {   
-
         ConsoleGame game = new();
-        game.StartGame();
-
-        // Game game = new();
-        // game.StartGame();
+        game.Start();
     }
 }
