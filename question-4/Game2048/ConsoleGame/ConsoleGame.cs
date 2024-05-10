@@ -1,6 +1,3 @@
-using System.ComponentModel.Design;
-using System.Drawing;
-using System.Runtime.CompilerServices;
 
 namespace Game2048;
 
@@ -25,6 +22,7 @@ public class ConsoleGame : Game
 
         ConsoleKeyInfo pressedKey;
         bool flag = true;
+        bool restartGame = false;
 
         while (flag)
         {  
@@ -42,46 +40,79 @@ public class ConsoleGame : Game
 
             }else if (Status == GameStatus.Lose){
                 if (GameBoard.WonTheGame){
+                    Console.Clear();
+
                     Console.ForegroundColor = ConsoleColor.Green; 
                     Console.WriteLine($"You Won!\n");
 
                     Console.ForegroundColor = ConsoleColor.DarkCyan; 
                     Console.WriteLine($"Score - {Points}");
+                    Console.WriteLine($"Time: {GameBoard.Stopper}");
                     Console.ForegroundColor = ConsoleColor.Gray; 
 
                     Console.WriteLine();
 
-                    flag = false;
-
                 }else{
+                    Console.Clear();
+
                     Console.ForegroundColor = ConsoleColor.Red; 
                     Console.WriteLine($"You Lost!\n");
 
                     Console.ForegroundColor = ConsoleColor.DarkCyan; 
-                    Console.WriteLine($"SCORE: {Points}");
+                    Console.WriteLine($"Score: {Points}");
+                    Console.WriteLine($"Time: {GameBoard.Stopper}");
                     Console.ForegroundColor = ConsoleColor.Gray; 
 
                     Console.WriteLine();
 
-                    flag = false;
                 }
 
+                menu.EndMenu();
+
+                pressedKey = Console.ReadKey(true);
+
+                switch(pressedKey.Key){
+                    case ConsoleKey.Enter:
+                        // Start the game.
+
+                        AddToLeaderBoard();
+                        ResetGame();
+                        flag = false;
+                        restartGame = true;
+
+                        break;
+
+                    case ConsoleKey.S:
+                        // Save and go back.
+
+                        AddToLeaderBoard();
+                        ResetGame();
+                        Console.Clear();
+                        menu.MainMenu();
+                        flag = false;
+
+                        break;
+                }
             }
         }
+
+        if (restartGame)
+            StartGame();
+
     }
 
     public void Start(){
         // The method oversees the menu scene.
 
         Console.Clear();
- 
+
         Console.BackgroundColor = ConsoleColor.Black;
         Console.CursorVisible = false;
         Console.Title = "Is it only 2048 . . ?";
         Console.TreatControlCAsInput = true;
 
         Console.ForegroundColor = ConsoleColor.Magenta; 
-        Console.WriteLine(menu);
+        menu.MainMenu();
 
         ConsoleKeyInfo pressedKey;
 
@@ -114,7 +145,24 @@ public class ConsoleGame : Game
 
                 case ConsoleKey.L:
                     // Show leader board.
-                    System.Console.WriteLine("leader board");
+                   
+                    Console.Clear();
+                    PrintLeaderBoard();
+                    menu.LeaderBoardMenu();
+
+                    bool showLeaderBoard = true;
+                    while (showLeaderBoard)
+                    {
+                        pressedKey = Console.ReadKey(true);
+
+                        if(pressedKey.Key == ConsoleKey.Q){
+                            // Open main menu.
+                            Console.Clear();
+                            menu.MainMenu();
+                            showLeaderBoard = false;
+                        }
+                    }
+
                     break;
 
                 case ConsoleKey.Escape:

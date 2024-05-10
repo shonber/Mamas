@@ -1,4 +1,5 @@
 
+using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
@@ -20,11 +21,15 @@ public class Board
 
     private readonly int winningScore = 2048;
 
+    protected Stopwatch stopper;
+
     public Board(){
         boardSize = new BoardSize(4, 4);
 
         Data = new int[boardSize.Width, boardSize.Height];
         this.fullSlots = new bool[boardSize.Width * boardSize.Height];
+
+        this.stopper = new();
 
         ResetBoard();
     }
@@ -44,8 +49,19 @@ public class Board
         protected set { status = value; }
     }
 
+
+    public TimeSpan Stopper{
+        get{
+            return stopper.Elapsed;
+        }
+    }
+    
+
     public void Start(){
         // The method will start the game and place two numbers (2 or 4) on empty slots.
+
+        this.stopper.Start();
+
         Console.ForegroundColor = ConsoleColor.DarkCyan; 
         Console.Write("SCORE: 0");
         Console.ForegroundColor = ConsoleColor.Gray; 
@@ -120,6 +136,16 @@ public class Board
             for(int col = 0; col < Data.GetLength(1); col++){
                 Data[row,col] = -1;
             }
+    }
+
+    public void ResetGame(){
+        // Reset the game.
+
+        ResetBoard();
+        this.fullSlots = new bool[boardSize.Width * boardSize.Height];
+        this.stopper = new();
+        WonTheGame = false;
+        Status = GameStatus.Idle;
     }
 
     private string PrintBoard (){
@@ -230,10 +256,11 @@ public class Board
                 foundEmptySlot = true;
         }
 
+        bool possibleCombinationsFlag;
         if (!foundEmptySlot){
             // no empty slots
             // check for combinations
-            bool possibleCombinationsFlag = CheckPossibleCombinations();
+            possibleCombinationsFlag = CheckPossibleCombinations();
             if (!possibleCombinationsFlag){
                 EndGame();
             }
@@ -252,6 +279,12 @@ public class Board
 
         Data[generated_block.Row, generated_block.Col] = generated_block.Value;
         this.fullSlots[generated_block.Col + generated_block.Row * boardSize.Width] = true;
+
+        // check for combinations again
+        possibleCombinationsFlag = CheckPossibleCombinations();
+        if (!possibleCombinationsFlag){
+            EndGame();
+        }
     }
 
     private bool CheckPossibleCombinations(){
@@ -662,6 +695,8 @@ public class Board
 
     public void EndGame(){
         // The method will end the current running game - Lost.
+
+        this.stopper.Stop();
 
         Status = GameStatus.Lose;
     }
