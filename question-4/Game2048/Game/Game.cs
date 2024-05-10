@@ -83,6 +83,9 @@ public class Game
         DataContractSerializer serializer = new(this.leaderBoard.GetType());
 
         using var reader = new FileStream(leaderBoardPathName, FileMode.Open, FileAccess.Read);
+        if (reader.Length <= 0)
+            return;
+            
         Dictionary<DateTime, string[]> loadedLeaderBoard = (Dictionary<DateTime, string[]>) serializer.ReadObject(reader);
         this.leaderBoard = loadedLeaderBoard;
 

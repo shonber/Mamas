@@ -58,7 +58,7 @@ public class Board
     
 
     public void Start(){
-        // The method will start the game and place two numbers (2 or 4) on empty slots.
+        // The method will start the game and place two numbers on two random slots.
 
         this.stopper.Start();
 
