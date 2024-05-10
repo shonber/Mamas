@@ -6,33 +6,77 @@ namespace Game2048;
 
 public class Menu()
 {
-    private Dictionary<string, string> commandsList = new () {
+    private Dictionary<string, string> mainMenuCommands = new () {
         {"start", "<Enter> to start the game.\n"},
-        {"leader board", "<L> to show the game leader board.\n"},
+        {"leaderBoard", "<L> to show the game leader board.\n"},
         {"0x435446", "<Escape> for a small challenge ;)\n"},
         {"exit", "<Q> to close the game.\n"},
     };
 
-    public override string ToString()
-    {
-        // Iterate over the commandList
-        string retVal = "";
+    private Dictionary<string, string> endMenuCommands = new () {
+        {"playAgain", "<Enter> to save the game and play again.\n"},
+        {"saveRun", "<S> to save the game and return to the main menu.\n"},
+    };
 
-        Console.Clear();
+    private Dictionary<string, string> leaderBoardMenuCommands = new () {
+        {"goBack", "<Q> to go back to main menu.\n"},
+    };
+
+    public void MainMenu(){
+        // Prints the Main Menu.
+        
+
+        StringBuilder retVal = new();
 
         // Show welcome message.
         Console.ForegroundColor = ConsoleColor.Magenta; 
         Console.WriteLine($"Welcome To 2048!\n");
         Console.ForegroundColor = ConsoleColor.DarkBlue; 
 
-        retVal += $"Menu\n";
-        retVal += $"____\n";
+        retVal.Append("Main Menu\n");
+        retVal.Append("_________\n\n");
 
-        foreach(KeyValuePair<string, string> entry in this.commandsList)
+        foreach(KeyValuePair<string, string> entry in this.mainMenuCommands)
         {
-            retVal += entry.Value;
+            retVal.Append(entry.Value);
         }
 
-        return retVal.ToString();
+        Console.ForegroundColor = ConsoleColor.Yellow; 
+        Console.WriteLine(retVal);
+        Console.ForegroundColor = ConsoleColor.Gray; 
+    }
+
+    public void EndMenu(){
+        // Prints the End Menu.
+
+        StringBuilder retVal = new();
+
+        retVal.Append("End Menu\n");
+        retVal.Append("________\n\n");
+
+        foreach(KeyValuePair<string, string> entry in this.endMenuCommands)
+        {
+            retVal.Append(entry.Value);
+        }
+
+        Console.ForegroundColor = ConsoleColor.Yellow; 
+        Console.WriteLine(retVal);
+        Console.ForegroundColor = ConsoleColor.Gray; 
+    }
+
+    public void LeaderBoardMenu(){
+        // Prints the leader board menu.                
+
+        StringBuilder retVal = new();
+
+        foreach(KeyValuePair<string, string> entry in this.leaderBoardMenuCommands)
+        {
+            retVal.Append(entry.Value);
+        }
+
+        Console.ForegroundColor = ConsoleColor.Yellow; 
+        Console.WriteLine(retVal.ToString());
+        Console.ForegroundColor = ConsoleColor.Gray; 
+
     }
 }
