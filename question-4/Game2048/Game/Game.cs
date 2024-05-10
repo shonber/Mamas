@@ -190,7 +190,7 @@ public class Game
         if (GameBoard.WonTheGame){
             Console.Write($"SCORE: {Points}");
             Console.ForegroundColor = ConsoleColor.Green; 
-            Console.Write($"(WON)");
+            Console.Write(" (WON)");
         }
         else
             Console.Write($"SCORE: {Points}");

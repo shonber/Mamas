@@ -30,7 +30,7 @@ public class Menu()
 
         // Show welcome message.
         Console.ForegroundColor = ConsoleColor.Magenta; 
-        Console.WriteLine($"Welcome To 2048!\n");
+        Console.WriteLine("Welcome To 2048!\n");
         Console.ForegroundColor = ConsoleColor.DarkBlue; 
 
         retVal.Append("Main Menu\n");

@@ -1,5 +1,4 @@
 
-using System.Runtime.InteropServices;
 
 namespace Game2048;
 
@@ -20,7 +19,7 @@ public class ConsoleGame : Game
         GameBoard.Start();
 
         Console.ForegroundColor = ConsoleColor.Magenta; 
-        Console.WriteLine($"Use the arrow keys to play\n");
+        Console.WriteLine("Use the arrow keys to play\n");
 
 
         while (flag)
@@ -32,7 +31,6 @@ public class ConsoleGame : Game
                     GameLost();
 
                 menu.EndMenu();
-                EndGameManager();
 
                 ConsoleKeyInfo pressedKey = Console.ReadKey(true);
 
@@ -53,7 +51,6 @@ public class ConsoleGame : Game
 
         if (restartGame)
             StartGame();
-
     }
 
     private void MovementManager(){
@@ -61,15 +58,24 @@ public class ConsoleGame : Game
 
         ConsoleKeyInfo pressedKey = Console.ReadKey(true);
 
-        if (pressedKey.Key == ConsoleKey.UpArrow)
-            Move(Direction.Up);
-        else if (pressedKey.Key == ConsoleKey.DownArrow)
-            Move(Direction.Down);  
-        else if (pressedKey.Key == ConsoleKey.LeftArrow)
-            Move(Direction.Left);  
-        else if (pressedKey.Key == ConsoleKey.RightArrow)
-            Move(Direction.Right);  
+        switch (pressedKey.Key)
+        {
+            case ConsoleKey.UpArrow:
+                Move(Direction.Up);
+                break;
 
+            case ConsoleKey.DownArrow:
+                Move(Direction.Down);
+                break;
+
+            case ConsoleKey.LeftArrow:
+                Move(Direction.Left);
+                break;
+
+            case ConsoleKey.RightArrow:
+                Move(Direction.Right);
+                break;
+        }
     }
 
     private bool IsGameWon(){
@@ -79,7 +85,7 @@ public class ConsoleGame : Game
             Console.Clear();
 
             Console.ForegroundColor = ConsoleColor.Green; 
-            Console.WriteLine($"You Won!\n");
+            Console.WriteLine("You Won!\n");
 
             Console.ForegroundColor = ConsoleColor.DarkCyan; 
             Console.WriteLine($"Score - {Points}");
@@ -100,7 +106,7 @@ public class ConsoleGame : Game
         Console.Clear();
 
         Console.ForegroundColor = ConsoleColor.Red; 
-        Console.WriteLine($"You Lost!\n");
+        Console.WriteLine("You Lost!\n");
 
         Console.ForegroundColor = ConsoleColor.DarkCyan; 
         Console.WriteLine($"Score: {Points}");
@@ -131,49 +137,27 @@ public class ConsoleGame : Game
         return false;
     }
 
-    private void EndGameManager(){
-        // The method oversees the end game actions.
-
-        
-    }
-
     public void Start(){
         // The method oversees the menu scene.
 
-        Console.Clear();
-
-        Console.BackgroundColor = ConsoleColor.Black;
-        Console.CursorVisible = false;
-        Console.Title = "Is it only 2048 . . ?";
-        Console.TreatControlCAsInput = true;
-
-        Console.ForegroundColor = ConsoleColor.Magenta; 
-        menu.MainMenu();
-
         ConsoleKeyInfo pressedKey;
-
         bool runApp = true;
 
+        ShowMainMenu();
+
+        // You are here.
         while (runApp){
             pressedKey = Console.ReadKey(true);
 
             switch(pressedKey.Key){
                 case ConsoleKey.Enter:
                     // Start the game.
-
                     StartGame();
-                    
                     break;
 
                 case ConsoleKey.Q:
                     // Close the game.
-
-                    runApp = false;
-
-                    Console.ForegroundColor = ConsoleColor.Red; 
-                    Console.WriteLine("Game Closed.");
-                    Console.ForegroundColor = ConsoleColor.Gray; 
-
+                    runApp = ShutDownGame();
                     break;
 
                 case ConsoleKey.L:
@@ -200,10 +184,33 @@ public class ConsoleGame : Game
 
                 case ConsoleKey.Escape:
                     // Show challenge.
-
-                    System.Console.WriteLine("Challenge started.");
+                    Console.WriteLine("Challenge started.");
                     break;
             }
         }
+    }
+
+    private void ShowMainMenu(){
+        // The method prints the main menu and configures the console a bit.
+
+        Console.Clear();
+
+        Console.BackgroundColor = ConsoleColor.Black;
+        Console.CursorVisible = false;
+        Console.Title = "Is it only 2048 . . ?";
+        Console.TreatControlCAsInput = true;
+
+        Console.ForegroundColor = ConsoleColor.Magenta; 
+        menu.MainMenu();
+    }
+
+    private bool ShutDownGame(){
+        // The method is part of the shut down process.
+
+        Console.ForegroundColor = ConsoleColor.Red; 
+        Console.WriteLine("Game Closed.");
+        Console.ForegroundColor = ConsoleColor.Gray; 
+
+        return false;
     }
 }
