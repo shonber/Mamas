@@ -159,7 +159,7 @@ public class Board
         int numLength = (int) Math.Floor(Math.Log10(currentValue) + 1);
 
         if (currentValue == -1){
-            sb.Append($"|     {currentValue}     ");
+            sb.Append($"|            ");
         }else{
             switch(numLength){
                 case 6:
