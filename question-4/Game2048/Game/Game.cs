@@ -41,7 +41,7 @@ public class Game
         }
     }
 
-    public virtual void StartGame(){
+    protected virtual void StartGame(){
         this.gameBoard.Start();
 
         string input = "";
