@@ -6,22 +6,22 @@ namespace Game2048;
 
 public class ConsoleGame : Game
 {
-    // TODO: Implement Command design pattern and use here for each command in the Menu
-
+    private Menu menu;
+    
     public ConsoleGame() : base(){
-
+        menu = new();
     }
 
     protected override void StartGame(){
         // Overriding the inherited method.
 
         Console.Clear();
- 
-        Console.BackgroundColor = ConsoleColor.Black;
-        Console.CursorVisible = false;
-        Console.Title = "Is it only 2048 . . ?";
 
         GameBoard.Start();
+
+        Console.ForegroundColor = ConsoleColor.Magenta; 
+        Console.WriteLine($"Use the arrow keys to play\n");
+        Console.ForegroundColor = ConsoleColor.Magenta; 
 
         ConsoleKeyInfo pressedKey;
         bool flag = true;
@@ -74,30 +74,55 @@ public class ConsoleGame : Game
         // The method oversees the menu scene.
 
         Console.Clear();
+ 
+        Console.BackgroundColor = ConsoleColor.Black;
+        Console.CursorVisible = false;
+        Console.Title = "Is it only 2048 . . ?";
+        Console.TreatControlCAsInput = true;
 
-        // Show welcome message.
         Console.ForegroundColor = ConsoleColor.Magenta; 
-        Console.WriteLine($"Welcome To 2048!\n");
-        Console.ForegroundColor = ConsoleColor.Gray; 
+        Console.WriteLine(menu);
 
-        Menu();
+        ConsoleKeyInfo pressedKey;
 
-        // TODO: Each command (design pattern) use here.
-        // TODO: Printing the command invoker will show the Menu.
-        // TODO: Add a static array that will hold all commands.
+        bool runApp = true;
 
-        // Start option.
+        while (runApp){
+            if (!runApp) 
+                return;
 
-        // Exit option.
+            pressedKey = Console.ReadKey(true);
 
-        // Leader board option.
+            switch(pressedKey.Key){
+                case ConsoleKey.Enter:
+                    // Start the game.
 
-        // CTF for teach'as
+                    StartGame();
+                    
+                    break;
+
+                case ConsoleKey.Q:
+                    // Close the game.
+
+                    runApp = false;
+
+                    Console.ForegroundColor = ConsoleColor.Red; 
+                    Console.WriteLine("Game Closed.");
+                    Console.ForegroundColor = ConsoleColor.Gray; 
+
+                    break;
+
+                case ConsoleKey.L:
+                    // Show leader board.
+                    System.Console.WriteLine("leader board");
+                    break;
+
+                case ConsoleKey.Escape:
+                    // Show challenge.
+
+                    System.Console.WriteLine("Challenge started.");
+                    break;
+            }
+        }
     }
-
-    private void Menu(){
-        // The method will print the Menu
-
-    }
-
 }
