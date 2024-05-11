@@ -1,7 +1,7 @@
 
 namespace Game2048;
 
-public static class CombinationsChecker{
+internal static class CombinationsChecker{
     public static bool CheckPossibleCombinations(int[,] data, BoardSize boardSize){
         // The method checks if there are any possible combinations in the Board.
 

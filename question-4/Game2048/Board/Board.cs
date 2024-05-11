@@ -9,16 +9,16 @@ public class Board
 {
     private sealed record GeneratedBlock(int Row, int Col, int Value);
 
-    private bool[] fullSlots;
     private readonly BoardSize boardSize;
     private readonly int winningScore = 2048;
+
     private Stopwatch stopper;
 
     public Board(){
         this.boardSize = new BoardSize(4, 4);
 
         Data = new int[this.boardSize.Width, this.boardSize.Height];
-        this.fullSlots = new bool[this.boardSize.Width * this.boardSize.Height];
+        FullSlots = new bool[this.boardSize.Width * this.boardSize.Height];
 
         this.stopper = new();
 
@@ -33,7 +33,8 @@ public class Board
             return stopper.Elapsed;
         }
     }
-    
+    protected bool[] FullSlots{ set; get;}
+
     public void Start(){
         // The method will start the game and place two random numbers on two random slots.
 
@@ -109,7 +110,7 @@ public class Board
         // Reset the game.
 
         ResetBoard();
-        this.fullSlots = new bool[this.boardSize.Width * this.boardSize.Height];
+        FullSlots = new bool[this.boardSize.Width * this.boardSize.Height];
         this.stopper = new();
         WonTheGame = false;
         Status = GameStatus.Idle;
@@ -206,7 +207,7 @@ public class Board
         generated_block = GenerateBlock();
 
         // Check if there are free slots.
-        foreach (var item in this.fullSlots)
+        foreach (var item in FullSlots)
         {
             if (!item)
                 foundEmptySlot = true;
@@ -222,12 +223,12 @@ public class Board
         while (!foundEmptySlot){
             generated_block = GenerateBlock();
 
-            if (!this.fullSlots[generated_block.Col + generated_block.Row * this.boardSize.Width])
+            if (!FullSlots[generated_block.Col + generated_block.Row * this.boardSize.Width])
                 foundEmptySlot = true;
         }
 
         Data[generated_block.Row, generated_block.Col] = generated_block.Value;
-        this.fullSlots[generated_block.Col + generated_block.Row * this.boardSize.Width] = true;
+        FullSlots[generated_block.Col + generated_block.Row * this.boardSize.Width] = true;
 
         // check for combinations again
         NoCombinationsEndGame();
@@ -241,259 +242,6 @@ public class Board
             EndGame();
     }
 
-    private int MoveUp(){
-        // The method handles the block movement to the top.
-
-        int score = 0, currentBlock, targetBlock, fullSlotIndex, mergeSum;
-
-        for(int row = Data.GetLength(0) - 1; row >= 0; row--){
-            for(int col = 0; col < Data.GetLength(1); col++){
-                currentBlock = Data[row,col];
-
-                if (currentBlock != -1){
-                    // Makes sure the row is not the upper limit.
-                    if(row != 0){
-                        // Check if the current block is the same as the above one or not - if yes, merge.
-                        targetBlock = Data[row - 1, col];
-                        // Checks if they are the same
-                        if ((targetBlock != -1) && (currentBlock == targetBlock)){
-                            // merge and become their sum and the moved place.
-                            mergeSum = currentBlock + targetBlock;
-
-                            // Move current to target with the mergeValue and change the current to -1.
-                            Data[row - 1, col] = mergeSum;
-                            Data[row, col] = -1;
-
-                            // update this.fullSlots - current to false and target to true.
-                            fullSlotIndex = col + row * this.boardSize.Width;
-                            this.fullSlots[fullSlotIndex] = false;
-
-                            fullSlotIndex = col + (row - 1) * this.boardSize.Width;
-                            this.fullSlots[fullSlotIndex] = true;
-
-                            // add their sum to the score.
-                            score += mergeSum;
-
-                            // Check if the user won
-                            if (mergeSum == winningScore && Status != GameStatus.Win)
-                                WinGame();
-
-                        }else if((targetBlock == -1) && (currentBlock != targetBlock)){
-                            // Move current to target.
-                            Data[row - 1, col] = currentBlock;
-
-                            // Convert current to -1.
-                            Data[row, col] = -1;
-
-                            // update this.fullSlots - current to false and target to true.
-                            fullSlotIndex = col + row * this.boardSize.Width;
-                            this.fullSlots[fullSlotIndex] = false;
-
-                            fullSlotIndex = col + (row - 1) * this.boardSize.Width;
-                            this.fullSlots[fullSlotIndex] = true;
-
-                            // // Check if the user won
-                            // if (Status == GameStatus.Win)
-                            //     WinGame();
-                        }
-                    }
-                }
-            }
-        }
-
-        return score;
-    }
-
-    private int MoveDown(){
-        // The method handles the block movement to the bottom.
-
-        int score = 0, currentBlock, targetBlock, fullSlotIndex, mergeSum;
-
-        for(int row = 0; row < Data.GetLength(0); row++){
-            for(int col = 0; col < Data.GetLength(1); col++){
-                currentBlock = Data[row,col];
-
-                if (currentBlock != -1){
-                    // Makes sure the row is not the upper limit.
-                    if (!(row == this.boardSize.Height - 1)){
-                        // Check if the current block is the same as the above one or not - if yes, merge.
-                        targetBlock = Data[row + 1, col];
-                        // Checks if they are the same
-                        if ((targetBlock != -1) && (currentBlock == targetBlock)){
-                            // merge and become their sum and the moved place.
-                            mergeSum = currentBlock + targetBlock;
-
-                            // Move current to target with the mergeValue and change the current to -1.
-                            Data[row + 1, col] = mergeSum;
-                            Data[row, col] = -1;
-
-                            // update this.fullSlots - current to false and target to true.
-                            fullSlotIndex = col + row * this.boardSize.Width;
-                            this.fullSlots[fullSlotIndex] = false;
-
-                            fullSlotIndex = col + (row + 1) * this.boardSize.Width;
-                            this.fullSlots[fullSlotIndex] = true;
-
-                            // add their sum to the score.
-                            score += mergeSum;
-
-                            // Check if the user won
-                            if (mergeSum == winningScore && Status != GameStatus.Win)
-                                WinGame();
-
-                        }else if((targetBlock == -1) && (currentBlock != targetBlock)){
-                            // Move current to target.
-                            Data[row + 1, col] = currentBlock;
-
-                            // Convert current to -1.
-                            Data[row, col] = -1;
-
-                            // update this.fullSlots - current to false and target to true.
-                            fullSlotIndex = col + row * this.boardSize.Width;
-                            this.fullSlots[fullSlotIndex] = false;
-
-                            fullSlotIndex = col + (row + 1) * this.boardSize.Width;
-                            this.fullSlots[fullSlotIndex] = true;
-
-                            // // Check if the user won
-                            // if (Status == GameStatus.Win)
-                            //     WinGame();
-
-                        }
-                    }
-                }
-            }
-        }
-
-        return score;
-    }
-
-    private int MoveLeft(){
-        // The method handles the block movement to the left.
-
-        int score = 0, currentBlock, targetBlock, fullSlotIndex, mergeSum;
-
-        for(int row = 0; row < Data.GetLength(0); row++){
-            for(int col = Data.GetLength(1) - 1; col >= 0; col--){
-                currentBlock = Data[row, col];
-
-                if (currentBlock != -1){
-                    // Makes sure the row is not the upper limit.
-                    if (!(col == 0)){
-                        // Check if the current block is the same as the above one or not - if yes, merge.
-                        targetBlock = Data[row, col - 1];
-                        // Checks if they are the same
-                        if ((targetBlock != -1) && (currentBlock == targetBlock)){
-                            // merge and become their sum and the moved place.
-                            mergeSum = currentBlock + targetBlock;
-
-                            // Move current to target with the mergeValue and change the current to -1.
-                            Data[row, col - 1] = mergeSum;
-                            Data[row, col] = -1;
-
-                            // update this.fullSlots - current to false and target to true.
-                            fullSlotIndex = col + row * this.boardSize.Width;
-                            this.fullSlots[fullSlotIndex] = false;
-
-                            fullSlotIndex = col - 1 + row * this.boardSize.Width;
-                            this.fullSlots[fullSlotIndex] = true;
-
-                            // add their sum to the score.
-                            score += mergeSum;
-
-                            // Check if the user won
-                            if (mergeSum == winningScore && Status != GameStatus.Win)
-                                WinGame();
-
-                        }else if((targetBlock == -1) && (currentBlock != targetBlock)){
-                            // Move current to target.
-                            Data[row, col - 1] = currentBlock;
-
-                            // Convert current to -1.
-                            Data[row, col] = -1;
-
-                            // update this.fullSlots - current to false and target to true.
-                            fullSlotIndex = col + row * this.boardSize.Width;
-                            this.fullSlots[fullSlotIndex] = false;
-
-                            fullSlotIndex = col - 1 + row * this.boardSize.Width;
-                            this.fullSlots[fullSlotIndex] = true;
-
-                            // // Check if the user won
-                            // if (Status == GameStatus.Win)
-                            //     WinGame();
-                        }
-                    }
-                }
-            }
-        }
-
-        return score;
-    }
-
-    private int MoveRight(){
-        // The method handles the block movement to the right.
-
-        int score = 0, currentBlock, targetBlock, fullSlotIndex, mergeSum;
-
-        for(int row = 0; row < Data.GetLength(0); row++){
-            for(int col = 0; col < Data.GetLength(1) - 1; col++){
-                currentBlock = Data[row, col];
-
-                if (currentBlock != -1){
-                    // Makes sure the row is not the upper limit.
-                    if (!(col == Data.GetLength(1) - 1)){
-                        // Check if the current block is the same as the above one or not - if yes, merge.
-                        targetBlock = Data[row, col + 1];
-                        // Checks if they are the same
-                        if ((targetBlock != -1) && (currentBlock == targetBlock)){
-                            // merge and become their sum and the moved place.
-                            mergeSum = currentBlock + targetBlock;
-
-                            // Move current to target with the mergeValue and change the current to -1.
-                            Data[row, col + 1] = mergeSum;
-                            Data[row, col] = -1;
-
-                            // update this.fullSlots - current to false and target to true.
-                            fullSlotIndex = col + row * this.boardSize.Width;
-                            this.fullSlots[fullSlotIndex] = false;
-
-                            fullSlotIndex = col + 1 + row * this.boardSize.Width;
-                            this.fullSlots[fullSlotIndex] = true;
-
-                            // add their sum to the score.
-                            score += mergeSum;
-
-                            // Check if the user won
-                            if (mergeSum == winningScore && Status != GameStatus.Win)
-                                WinGame();
-
-                        }else if((targetBlock == -1) && (currentBlock != targetBlock)){
-                            // Move current to target.
-                            Data[row, col + 1] = currentBlock;
-
-                            // Convert current to -1.
-                            Data[row, col] = -1;
-
-                            // update this.fullSlots - current to false and target to true.
-                            fullSlotIndex = col + row * this.boardSize.Width;
-                            this.fullSlots[fullSlotIndex] = false;
-
-                            fullSlotIndex = col + 1 + row * this.boardSize.Width;
-                            this.fullSlots[fullSlotIndex] = true;
-
-                            // // Check if the user won
-                            // if (Status == GameStatus.Win)
-                            //     WinGame();
-                        }
-                    }
-                }
-            }
-        }
-
-        return score;
-    }
-
     private void EndGame(){
         // The method will end the current running game - Lost.
 
@@ -501,11 +249,232 @@ public class Board
         Status = GameStatus.Lose;
     }
 
-    private void WinGame(){
+    protected void WinGame(){
         // The method will alert the client that they won.
 
         Status = GameStatus.Win;
         WonTheGame = true;
+    }
+
+    public int MoveUp(){
+        // The method handles the block movement to the top.
+
+        int score = 0, currentBlock, targetBlock, mergeSum;
+
+        for(int row = Data.GetLength(0) - 1; row >= 0; row--){
+            for(int col = 0; col < Data.GetLength(1); col++){
+                currentBlock = Data[row,col];
+
+                if ((currentBlock != -1) && (row != 0)){
+                    targetBlock = Data[row - 1, col];
+
+                    if ((targetBlock != -1) && (currentBlock == targetBlock)){
+                        mergeSum = currentBlock + targetBlock;
+                        score += mergeSum;
+                        MergeUp(row, col, mergeSum);
+
+                    }else if((targetBlock == -1) && (currentBlock != targetBlock))
+                        SwitchUp(row, col, currentBlock);
+                }
+            }
+        }
+
+        return score;
+    }
+
+    public int MoveDown(){
+        // The method handles the block movement to the bottom.
+
+        int score = 0, currentBlock, targetBlock, mergeSum;
+
+        for(int row = 0; row < Data.GetLength(0); row++){
+            for(int col = 0; col < Data.GetLength(1); col++){
+                currentBlock = Data[row,col];
+
+                if ((currentBlock != -1) && (row != boardSize.Height - 1)){
+                    targetBlock = Data[row + 1, col];
+
+                    if ((targetBlock != -1) && (currentBlock == targetBlock)){
+                        mergeSum = currentBlock + targetBlock;
+                        score += mergeSum;
+                        MergeDown(row, col, mergeSum);
+
+                    }else if((targetBlock == -1) && (currentBlock != targetBlock))
+                        SwitchDown(row, col, currentBlock);
+                }
+            }
+        }
+
+        return score;
+    }
+
+    public int MoveLeft(){
+        // The method handles the block movement to the left.
+
+        int score = 0, currentBlock, targetBlock, mergeSum;
+
+        for(int row = 0; row < Data.GetLength(0); row++){
+            for(int col = Data.GetLength(1) - 1; col >= 0; col--){
+                currentBlock = Data[row, col];
+
+                if ((currentBlock != -1) && (col != 0)){
+                    targetBlock = Data[row, col - 1];
+
+                    if ((targetBlock != -1) && (currentBlock == targetBlock)){
+                        mergeSum = currentBlock + targetBlock;
+                        score += mergeSum;
+                        MergeLeft(row, col, mergeSum);
+
+                    }else if((targetBlock == -1) && (currentBlock != targetBlock))
+                        SwitchLeft(row, col, currentBlock);
+                }
+            }
+        }
+
+        return score;
+    }
+
+    public int MoveRight(){
+        // The method handles the block movement to the right.
+
+        int score = 0, currentBlock, targetBlock, mergeSum;
+
+        for(int row = 0; row < Data.GetLength(0); row++){
+            for(int col = 0; col < Data.GetLength(1) - 1; col++){
+                currentBlock = Data[row, col];
+
+                if (currentBlock != -1 && (col != Data.GetLength(1) - 1)){
+                    targetBlock = Data[row, col + 1];
+
+                    if ((targetBlock != -1) && (currentBlock == targetBlock)){
+                        mergeSum = currentBlock + targetBlock;
+                        score += mergeSum;
+                        MergeRight(row, col, mergeSum);
+
+                    }else if((targetBlock == -1) && (currentBlock != targetBlock))
+                        SwitchRight(row, col, currentBlock);
+                }
+            }
+        }
+
+        return score;
+    }
+
+    private void MergeUp(int row, int col, int mergeSum){
+        // The method will take care of merging up two blocks.
+
+        Data[row - 1, col] = mergeSum;
+        Data[row, col] = -1;
+
+        int fullSlotIndex = col + row * boardSize.Width;
+        FullSlots[fullSlotIndex] = false;
+
+        fullSlotIndex = col + (row - 1) * boardSize.Width;
+        FullSlots[fullSlotIndex] = true;
+
+        if (mergeSum == winningScore && Status != GameStatus.Win)
+            WinGame();
+    }
+
+    private void SwitchUp(int row, int col, int currentBlock){
+        // The method will move a block up.
+
+        Data[row - 1, col] = currentBlock;
+        Data[row, col] = -1;
+
+        int fullSlotIndex = col + row * boardSize.Width;
+        FullSlots[fullSlotIndex] = false;
+
+        fullSlotIndex = col + (row - 1) * boardSize.Width;
+        FullSlots[fullSlotIndex] = true;
+    }
+
+    private void MergeDown(int row, int col, int mergeSum){
+        // The method will take care of merging up two blocks.
+
+        Data[row + 1, col] = mergeSum;
+        Data[row, col] = -1;
+
+        int fullSlotIndex = col + row * boardSize.Width;
+        FullSlots[fullSlotIndex] = false;
+
+        fullSlotIndex = col + (row + 1) * boardSize.Width;
+        FullSlots[fullSlotIndex] = true;
+
+        if (mergeSum == winningScore && Status != GameStatus.Win)
+            WinGame();
+    }
+
+    private void SwitchDown(int row, int col, int currentBlock){
+        // The method will move a block up.
+
+        Data[row + 1, col] = currentBlock;
+        Data[row, col] = -1;
+
+        int fullSlotIndex = col + row * boardSize.Width;
+        FullSlots[fullSlotIndex] = false;
+
+        fullSlotIndex = col + (row + 1) * boardSize.Width;
+        FullSlots[fullSlotIndex] = true;
+    }
+
+    private void MergeLeft(int row, int col, int mergeSum){
+        // The method will take care of merging up two blocks.
+
+        Data[row, col - 1] = mergeSum;
+        Data[row, col] = -1;
+
+        int fullSlotIndex = col + row * boardSize.Width;
+        FullSlots[fullSlotIndex] = false;
+
+        fullSlotIndex = col - 1 + row * boardSize.Width;
+        FullSlots[fullSlotIndex] = true;
+
+        if (mergeSum == winningScore && Status != GameStatus.Win)
+            WinGame();
+    }
+
+    private void SwitchLeft(int row, int col, int currentBlock){
+        // The method will move a block up.
+
+        Data[row, col - 1] = currentBlock;
+        Data[row, col] = -1;
+
+        int fullSlotIndex = col + row * boardSize.Width;
+        FullSlots[fullSlotIndex] = false;
+
+        fullSlotIndex = col - 1 + row * boardSize.Width;
+        FullSlots[fullSlotIndex] = true;
+    }
+    
+    private void MergeRight(int row, int col, int mergeSum){
+        // The method will take care of merging up two blocks.
+
+        Data[row, col + 1] = mergeSum;
+        Data[row, col] = -1;
+
+        int fullSlotIndex = col + row * boardSize.Width;
+        FullSlots[fullSlotIndex] = false;
+
+        fullSlotIndex = col + 1 + row * boardSize.Width;
+        FullSlots[fullSlotIndex] = true;
+
+        if (mergeSum == winningScore && Status != GameStatus.Win)
+            WinGame();
+    }
+
+    private void SwitchRight(int row, int col, int currentBlock){
+        // The method will move a block up.
+
+        Data[row, col + 1] = currentBlock;
+
+        Data[row, col] = -1;
+
+        int fullSlotIndex = col + row * boardSize.Width;
+        FullSlots[fullSlotIndex] = false;
+
+        fullSlotIndex = col + 1 + row * boardSize.Width;
+        FullSlots[fullSlotIndex] = true;
     }
 
     public override string ToString(){
