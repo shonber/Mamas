@@ -1,5 +1,4 @@
 
-
 namespace Game2048;
 
 public class ConsoleGame : Game
@@ -145,7 +144,6 @@ public class ConsoleGame : Game
 
         ShowMainMenu();
 
-        // You are here.
         while (runApp){
             pressedKey = Console.ReadKey(true);
 
@@ -162,30 +160,37 @@ public class ConsoleGame : Game
 
                 case ConsoleKey.L:
                     // Show leader board.
-                   
-                    Console.Clear();
-                    PrintLeaderBoard();
-                    menu.LeaderBoardMenu();
-
-                    bool showLeaderBoard = true;
-                    while (showLeaderBoard)
-                    {
-                        pressedKey = Console.ReadKey(true);
-
-                        if(pressedKey.Key == ConsoleKey.Q){
-                            // Open main menu.
-                            Console.Clear();
-                            menu.MainMenu();
-                            showLeaderBoard = false;
-                        }
-                    }
-
+                    ShowLeaderBoardOption();
                     break;
 
                 case ConsoleKey.Escape:
                     // Show challenge.
                     Console.WriteLine("Challenge started.");
                     break;
+            }
+        }
+    }
+
+    private void ShowLeaderBoardOption(){
+        // The method takes care of the leader board menu.
+
+        ConsoleKeyInfo pressedKey;
+        bool showLeaderBoard = true;
+
+        Console.Clear();
+
+        PrintLeaderBoard();
+        menu.LeaderBoardMenu();
+
+        while (showLeaderBoard)
+        {
+            pressedKey = Console.ReadKey(true);
+
+            if(pressedKey.Key == ConsoleKey.Q){
+                // Open main menu.
+                Console.Clear();
+                menu.MainMenu();
+                showLeaderBoard = false;
             }
         }
     }
@@ -204,7 +209,7 @@ public class ConsoleGame : Game
         menu.MainMenu();
     }
 
-    private bool ShutDownGame(){
+    private static bool ShutDownGame(){
         // The method is part of the shut down process.
 
         Console.ForegroundColor = ConsoleColor.Red; 

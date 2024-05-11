@@ -1,93 +1,32 @@
-
 using System.Text;
-using System.Xml.Serialization;
-using System.Runtime.Serialization;
-using System.Xml;
 
 namespace Game2048;
 
-public class Game
+public abstract class Game
 {
-    private Board gameBoard;
-    private GameStatus status;
-    private int points;
+    protected Dictionary<DateTime, string[]> LeaderBoard{ get; set; }
+    protected Board GameBoard{ get; set; }
+    protected GameStatus Status{ get; set; }
+    protected int Points{ get; set; }
 
-    private static readonly string leaderBoardPathName = "../leaderboard.xml";
+    protected Game() {
+        GameBoard = new();
+        
+        Status = GameStatus.Idle;
+        Points = 0;
+        LeaderBoard = [];
 
-
-    private Dictionary<DateTime, string[]> leaderBoard;
-
-    public Game() {
-        this.gameBoard = new();
-        this.status = GameStatus.Idle;
-        this.points = 0;
-
-        this.leaderBoard = new();
-
-        LoadLeaderBoard();
+        LeaderBoard = LeaderBoardFileManager.LoadLeaderBoard(LeaderBoard);
     }
 
-    public Board GameBoard{
-        get{
-            return gameBoard;
-        }
-        private set{
-            gameBoard = value;
-        }
-    }
-
-    public GameStatus Status{
-        get{
-            return status;
-        }
-        protected set{
-            status = value;
-        }
-    }
-
-    public int Points{
-        get{
-            return points;
-        }
-        protected set{
-            points = value;
-        }
-    }
-
-    protected Dictionary<DateTime, string[]> LeaderBoard{
-        get {
-            return leaderBoard;
-        }
-    }
+    // The method will be overridden with the start functionality for the 2048 game.
+    protected abstract void StartGame();
 
     protected void AddToLeaderBoard(){
         // The method will add the current play to the leader board.
 
-        this.leaderBoard.Add(DateTime.Now, [Points.ToString(), GameBoard.Stopper.ToString()]);
-        SaveLeaderBoardToXml();
-
-    }
-
-    protected void SaveLeaderBoardToXml(){
-        // The method will save a dictionary to a XML file.
-        
-        DataContractSerializer serializer = new(this.leaderBoard.GetType());
-
-        using var writer = new FileStream(leaderBoardPathName, FileMode.Create, FileAccess.Write);
-        serializer.WriteObject(writer, this.leaderBoard);
-    }
-
-    protected void ReadLeaderBoardFromXml(){
-        // The method will read a dictionary from a XML file.
-        
-        DataContractSerializer serializer = new(this.leaderBoard.GetType());
-
-        using var reader = new FileStream(leaderBoardPathName, FileMode.Open, FileAccess.Read);
-        if (reader.Length <= 0)
-            return;
-            
-        Dictionary<DateTime, string[]> loadedLeaderBoard = (Dictionary<DateTime, string[]>) serializer.ReadObject(reader);
-        this.leaderBoard = loadedLeaderBoard;
+        LeaderBoard.Add(DateTime.Now, [Points.ToString(), GameBoard.Stopper.ToString()]);
+        LeaderBoardFileManager.SaveLeaderBoardToXml(LeaderBoard);
 
     }
 
@@ -104,8 +43,8 @@ public class Game
         retVal.Append("Leader Board\n");
         retVal.Append("____________\n\n");
 
-        int index = 0;
-        foreach(KeyValuePair<DateTime, string[]> entry in LeaderBoard.Reverse())
+        int index = 1;
+        foreach(KeyValuePair<DateTime, string[]> entry in LeaderBoard)
         {
             retVal.Append($"{index} - {entry.Key}\n");
             retVal.Append($"\t score: {entry.Value[0]}\n");
@@ -118,72 +57,19 @@ public class Game
     }
 
     protected void ResetGame(){
+        // The method resets the game data.
+
         GameBoard.ResetGame();
         Points = 0;
         Status = GameStatus.Idle;
     }
 
-    protected virtual void StartGame(){        
-        GameBoard.Start();
-
-        string input = "";
-        bool flag = true;
-
-        while (flag)
-        {  
-            if (Status == GameStatus.Idle || Status == GameStatus.Win){
-                Console.Write("up / down / left / right >>> ");
-                input = Console.ReadLine();
-                if (input == "u")
-                    Move(Direction.Up);
-                else if (input == "d")
-                    Move(Direction.Down);  
-                else if (input == "l")
-                    Move(Direction.Left);  
-                else if (input == "r")
-                    Move(Direction.Right);  
-
-                Console.Write($"SCORE: {Points}");
-                Console.WriteLine(GameBoard);
-
-                CheckStatus();
-            }else if (Status == GameStatus.Lose){
-                Console.Clear();
-
-                string current_status = GameBoard.WonTheGame ? "Won" : "Lost";
-
-                Console.WriteLine($"You {current_status} the game with a score of - {this.points} - time: {GameBoard.Stopper}");
-                flag = false;
-            }
-        }
-    }
-
-    protected void LoadLeaderBoard(){
-        // The method will load a leader board from a file.
-
-
-        if (File.Exists(leaderBoardPathName)) {
-            // Load to the dictionary
-            ReadLeaderBoardFromXml();
-        }
-        else {
-            // Create the file
-           using FileStream fs = File.Create(leaderBoardPathName);
-        }
-    }
-
-    public void CheckStatus(){
-        // The method checks the current status of the game.
-        Status = GameBoard.Status;
-    }
-
-    public void Move(Direction direction){
+    protected void Move(Direction direction){
        // The method oversees the movement logic in the game.
 
         Console.Clear();
 
-        // Move accordantly
-        this.points += GameBoard.Move(direction);
+        Points += GameBoard.Move(direction);
 
         // Print current board and check status.
         Console.ForegroundColor = ConsoleColor.DarkCyan; 
@@ -195,16 +81,10 @@ public class Game
         else
             Console.Write($"SCORE: {Points}");
 
-        Console.ForegroundColor = ConsoleColor.Gray; 
-
         Console.ForegroundColor = ConsoleColor.Blue; 
         Console.WriteLine(GameBoard);
         Console.ForegroundColor = ConsoleColor.Gray; 
 
-        CheckStatus();
-    }
-
-    public override string ToString(){
-        return GameBoard.ToString();
+        Status = GameBoard.Status;
     }
 }

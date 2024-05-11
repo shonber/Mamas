@@ -1,30 +1,27 @@
-
-using System.ComponentModel;
 using System.Text;
 
 namespace Game2048;
 
 public class Menu()
 {
-    private Dictionary<string, string> mainMenuCommands = new () {
+    private readonly Dictionary<string, string> mainMenuCommands = new () {
         {"start", "<Enter> to start the game.\n"},
         {"leaderBoard", "<L> to show the game leader board.\n"},
         {"0x435446", "<Escape> for a small challenge ;)\n"},
         {"exit", "<Q> to close the game.\n"},
     };
 
-    private Dictionary<string, string> endMenuCommands = new () {
+    private readonly Dictionary<string, string> endMenuCommands = new () {
         {"playAgain", "<Enter> to save the game and play again.\n"},
         {"saveRun", "<S> to save the game and return to the main menu.\n"},
     };
 
-    private Dictionary<string, string> leaderBoardMenuCommands = new () {
+    private readonly Dictionary<string, string> leaderBoardMenuCommands = new () {
         {"goBack", "<Q> to go back to main menu.\n"},
     };
 
     public void MainMenu(){
         // Prints the Main Menu.
-        
 
         StringBuilder retVal = new();
 
@@ -77,6 +74,5 @@ public class Menu()
         Console.ForegroundColor = ConsoleColor.Yellow; 
         Console.WriteLine(retVal.ToString());
         Console.ForegroundColor = ConsoleColor.Gray; 
-
     }
 }
