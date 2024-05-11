@@ -4,7 +4,7 @@ namespace Game2048;
 public enum Direction {Up, Down, Left, Right}
 public enum GameStatus {Win, Lose, Idle}
 
-class Program
+static class Program
 {
     static void Main(string[] args)
     {   
