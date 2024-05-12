@@ -216,7 +216,7 @@ public class ConsoleGame : Game
 
         Console.BackgroundColor = ConsoleColor.Black;
         Console.CursorVisible = false;
-        Console.Title = "Is it only 2048 . . ?";
+        Console.Title = "Can you get 2048 . . ?";
         Console.TreatControlCAsInput = true;
 
         Console.ForegroundColor = ConsoleColor.Magenta; 
