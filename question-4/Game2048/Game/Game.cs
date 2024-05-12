@@ -25,7 +25,11 @@ public abstract class Game
     protected void AddToLeaderBoard(){
         // The method will add the current play to the leader board.
 
-        LeaderBoard.Add(DateTime.Now, [Points.ToString(), GameBoard.Stopper.ToString()]);
+        if (GameBoard.WonTheGame)
+            LeaderBoard.Add(DateTime.Now, [Points.ToString(), GameBoard.Stopper.ToString(), "Won"]);
+        else
+            LeaderBoard.Add(DateTime.Now, [Points.ToString(), GameBoard.Stopper.ToString(), "Lost"]);
+
         LeaderBoardFileManager.SaveLeaderBoardToXml(LeaderBoard);
 
     }
@@ -48,7 +52,8 @@ public abstract class Game
         {
             retVal.Append($"{index} - {entry.Key}\n");
             retVal.Append($"\t score: {entry.Value[0]}\n");
-            retVal.Append($"\t Time: {entry.Value[1]}\n\n");
+            retVal.Append($"\t Time: {entry.Value[1]}\n");
+            retVal.Append($"\t Status: {entry.Value[2]}\n\n");
 
             index ++;
         }

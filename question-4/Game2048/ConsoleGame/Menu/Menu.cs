@@ -7,7 +7,6 @@ public class Menu()
     private readonly Dictionary<string, string> mainMenuCommands = new () {
         {"start", "<Enter> to start the game.\n"},
         {"leaderBoard", "<L> to show the game leader board.\n"},
-        {"0x435446", "<Escape> for a small challenge ;)\n"},
         {"exit", "<Q> to close the game.\n"},
     };
 
