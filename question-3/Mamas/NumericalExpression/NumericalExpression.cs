@@ -80,7 +80,7 @@ public class NumericalExpression
         return charCounter;
     } 
 
-    // "Mehtod Overloading" is the OOP principle being used.
+    // Method Overloading (Compile-Time Polymorphism) is the OOP principle being used.
     public static int SumLetters (NumericalExpression n){
         // The method calls ConvertToString() method on numbers from 0 to @n: NumericalExpression and counts how many letters are needed without spaces.
 
