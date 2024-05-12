@@ -1,8 +1,10 @@
+import math
+
 
 def num_len(num: int) -> int:
     """Returns an int representing the length of @num: int."""
 
-    return 1 + num_len(num // 10) if num > 0 else 0
+    return 1 + math.floor(math.log10(num))
 
 
 if __name__ == '__main__':
