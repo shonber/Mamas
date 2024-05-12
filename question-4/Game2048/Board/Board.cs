@@ -3,12 +3,8 @@ using System.Text;
 
 namespace Game2048;
 
-public sealed record BoardSize(int Width, int Height);
-
 public class Board
 {
-    private sealed record GeneratedBlock(int Row, int Col, int Value);
-
     private readonly BoardSize boardSize;
     private readonly int winningScore = 2048;
 
@@ -33,7 +29,7 @@ public class Board
             return stopper.Elapsed;
         }
     }
-    protected bool[] FullSlots{ set; get;}
+    public bool[] FullSlots{ set; protected get;}
 
     public void Start(){
         // The method will start the game and place two random numbers on two random slots.
@@ -252,8 +248,9 @@ public class Board
     protected void WinGame(){
         // The method will alert the client that they won.
 
-        Status = GameStatus.Win;
         WonTheGame = true;
+        this.stopper.Stop();
+        Status = GameStatus.Lose;
     }
 
     public int MoveUp(){
