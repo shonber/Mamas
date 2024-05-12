@@ -70,8 +70,8 @@ static class Program
         NumericalExpression ne5 = new(0);
         Console.WriteLine(ne5);
 
-        NumericalExpression ne6 = new(-321);
-        Console.WriteLine(ne6);
+        // NumericalExpression ne6 = new(-321);
+        // Console.WriteLine(ne6);
 
         NumericalExpression.AddLanguage();
         Console.WriteLine(ne);

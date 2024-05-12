@@ -32,8 +32,8 @@ public class NumericalExpression
         },
     };
 
-    private static long[] multipliers =  [ 100, 1000, 1000000, 1000000000, 1000000000000 ];
-    private static long maxNumber = 999000000000000;
+    private static ulong[] multipliers =  [ 100, 1000, 1000000, 1000000000, 1000000000000 ];
+    private static ulong maxNumber = 999000000000000;
                                     
     private static string[] supportedLanguages = ["en", "he"];
     private static string selectedLanguage = supportedLanguages[0];
@@ -43,21 +43,21 @@ public class NumericalExpression
     private static readonly Func<string, string[]> GetMultiplierTextsTranslations = str => multiplierTextsTranslations[str];
     private static readonly Func<string, string[], string[]> SetMultiplierTextsTranslations = (str, newArr) => multiplierTextsTranslations[str] = newArr;
 
-    private readonly long number;
+    private readonly ulong number;
     private static readonly string encodingFormat = "UTF-16";
 
-    public NumericalExpression (long n){
+    public NumericalExpression (ulong n){
         this.number = n;
     }
 
-    public long GetValue (){
+    public ulong GetValue (){
         // The method returns the number attribute value.
 
         return this.number;
     } 
 
-    public static int SumLetters (long n){
-        // The method calls ConvertToString() method on numbers from 0 to @n: long and counts how many letters are needed without spaces.
+    public static int SumLetters (ulong n){
+        // The method calls ConvertToString() method on numbers from 0 to @n: ulong and counts how many letters are needed without spaces.
 
         if (n > maxNumber){
             Console.WriteLine("[-] Number is too big.");
@@ -65,7 +65,7 @@ public class NumericalExpression
         }
 
         int charCounter = 0;
-        for (long i = 0; i <= n; i++)
+        for (ulong i = 0; i <= n; i++)
         {
             string word = ConvertToString(i).Replace(" ", "");
             charCounter += word.Length;
@@ -84,7 +84,7 @@ public class NumericalExpression
         }
 
         int charCounter = 0;
-        for (long i = 0; i <= n.number; i++)
+        for (ulong i = 0; i <= n.number; i++)
         {
             string word = ConvertToString(i).Replace(" ", "");
             charCounter += word.Length;
@@ -93,8 +93,8 @@ public class NumericalExpression
         return charCounter;
     } 
 
-    private static string ConvertToString (long n){
-        // The method uses recursion technique to convert a @number: long to its word form.
+    private static string ConvertToString (ulong n){
+        // The method uses recursion technique to convert a @number: ulong to its word form.
 
         // Get translations based on selected language.
         string[] unitsArray = GetUnitsArray(selectedLanguage);
@@ -164,7 +164,7 @@ public class NumericalExpression
         Console.WriteLine($"[!] The current max number is >> {maxNumber}");
 
         Console.Write("[!] New max number (100, 1000, 1000000, etc.) >>> ");
-        long newMaxNumber = Convert.ToInt64(Console.ReadLine());
+        ulong newMaxNumber = ulong.Parse(Console.ReadLine());
 
         if ( (newMaxNumber / multipliers[^1] != 1000) || (newMaxNumber % 10 != 0) ){
             Console.WriteLine("[-] Insert a number that is bigger by 1000.");
