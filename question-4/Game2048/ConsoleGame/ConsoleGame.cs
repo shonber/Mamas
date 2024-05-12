@@ -181,11 +181,6 @@ public class ConsoleGame : Game
                     // Show leader board.
                     ShowLeaderBoardOption();
                     break;
-
-                case ConsoleKey.Escape:
-                    // Show challenge.
-                    Console.WriteLine("Challenge started.");
-                    break;
             }
         }
     }
