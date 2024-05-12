@@ -43,12 +43,14 @@ public class LinkedList<T>
 
             this.minNode = this.head;
             this.maxNode = this.head;
-        }else{
-            this.tail.Next = new_node;
-            this.tail = new_node;
 
-            CheckMinMaxNode(this.tail);
+            return;
         }
+            
+        this.tail.Next = new_node;
+        this.tail = new_node;
+
+        CheckMinMaxNode(this.tail);
     }
 
     public void Prepend(int n){
@@ -62,27 +64,25 @@ public class LinkedList<T>
 
             this.minNode = this.head;
             this.maxNode = this.head;
-        }else{
-            this.head = new_node;
 
-            CheckMinMaxNode(this.head);
+            return;
         }
+
+        this.head = new_node;
+        CheckMinMaxNode(this.head);
     }
 
     public int? Pop(){
         // The method removes the last node from the Linked List and updates the min/max node.
 
-        if (this.tail == null){
+        if (this.tail == null)
             return null;
-        }   
 
         int OldTailValue = this.tail.Value;
         Node? newTail = this.head;
 
-        while ((newTail?.Next != null) && (newTail?.Next != this.tail))
-        {
-            newTail = newTail?.Next;
-        }
+        while ((newTail?.Next != null) && (newTail.Next != this.tail))
+            newTail = newTail.Next;
 
         if (newTail?.Next == null){
             this.head = null;
@@ -111,7 +111,7 @@ public class LinkedList<T>
         }   
 
         int oldHeadValue = this.head.Value;
-        Node? newHead = this.head?.Next;
+        Node? newHead = this.head.Next;
 
         this.head.Next = null;
         this.head = newHead;
@@ -124,7 +124,7 @@ public class LinkedList<T>
 
     public IEnumerable<int> ToList()
     {
-        // Retrurns an IEnumerable interator
+        // Returns an IEnumerable iterator
 
         Node? current = this.head;
         while (current != null)
@@ -180,7 +180,7 @@ public class LinkedList<T>
         while (tempHead?.Next != null){
             if (tempHead.Value < newMinNode?.Value)
                 newMinNode = tempHead;
-            else if (tempHead.Value < newMinNode?.Value)
+            else if (tempHead.Next.Value < newMinNode?.Value)
                 newMinNode = tempHead.Next;
             tempHead = tempHead.Next;
         }

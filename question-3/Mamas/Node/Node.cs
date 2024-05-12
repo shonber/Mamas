@@ -1,9 +1,11 @@
+
 namespace MyProject;
 
 public class Node
 {
-    private int val;
-    private Node? next;
+    public int Value { get; set; }
+    public Node Next { get; set; }
+
 
     public Node(int v){
         Value = v;
@@ -15,21 +17,11 @@ public class Node
         Next = null;
     }
 
-    public int Value {
-        get { return val; }
-        set { val = value; }
-    }
-
-    public Node? Next {
-        get { return next; }
-        set { next = value; }
-    }
-
     public override string ToString()
     {
-        if (this.next is null)
-            return $" ({this.val}->null) ";
+        if (Next is null)
+            return $" ({Value}->null) ";
         else
-            return $" ({this.val}->{this.next}) ";
+            return $" ({Value}->{Next}) ";
     }
 }

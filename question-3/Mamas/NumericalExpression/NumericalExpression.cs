@@ -9,7 +9,6 @@ namespace MyProject;
 
 public class NumericalExpression
 {
-    // Dictinary for storing translations for each supported language.
     private static readonly Dictionary<string, string[]> unitsArrayTranslations = new (){
         {"en", new string[]
             {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" }
@@ -33,37 +32,32 @@ public class NumericalExpression
         },
     };
 
-    // Storing supported languages / current selected language.
+    private static ulong[] multipliers =  [ 100, 1000, 1000000, 1000000000, 1000000000000 ];
+    private static ulong maxNumber = 999000000000000;
+                                    
     private static string[] supportedLanguages = ["en", "he"];
     private static string selectedLanguage = supportedLanguages[0];
 
-    // Func Delegate Declaration
     private static readonly Func<string, string[]> GetUnitsArray = str => unitsArrayTranslations[str];
     private static readonly Func<string, string[]> GetTensArray = str => tensArrayTranslations[str];
     private static readonly Func<string, string[]> GetMultiplierTextsTranslations = str => multiplierTextsTranslations[str];
-
-    private static readonly Func<string, string[], string[]> SetUnitsArray = (str, newArr) => unitsArrayTranslations[str] = newArr;
-    private static readonly Func<string, string[], string[]> SetTensArray = (str, newArr) => tensArrayTranslations[str] = newArr;
     private static readonly Func<string, string[], string[]> SetMultiplierTextsTranslations = (str, newArr) => multiplierTextsTranslations[str] = newArr;
 
-    // Biggest number that can be translated.
-    private static long[] multipliers =  [ 100, 1000, 1000000, 1000000000, 1000000000000 ];
-    private static long maxNumber = 999000000000000;
+    private readonly ulong number;
+    private static readonly string encodingFormat = "UTF-16";
 
-    private readonly long number;
-
-    public NumericalExpression (long n){
+    public NumericalExpression (ulong n){
         this.number = n;
     }
 
-    public long GetValue (){
+    public ulong GetValue (){
         // The method returns the number attribute value.
 
         return this.number;
     } 
 
-    public static int SumLetters (long n){
-        // The method calls ConvertToString() method on numbers from 0 to @n: long and counts how many letters are needed without spaces.
+    public static int SumLetters (ulong n){
+        // The method calls ConvertToString() method on numbers from 0 to @n: ulong and counts how many letters are needed without spaces.
 
         if (n > maxNumber){
             Console.WriteLine("[-] Number is too big.");
@@ -71,7 +65,7 @@ public class NumericalExpression
         }
 
         int charCounter = 0;
-        for (long i = 0; i <= n; i++)
+        for (ulong i = 0; i <= n; i++)
         {
             string word = ConvertToString(i).Replace(" ", "");
             charCounter += word.Length;
@@ -80,7 +74,7 @@ public class NumericalExpression
         return charCounter;
     } 
 
-    // "Mehtod Overloading" is the OOP principle being used.
+    // Method Overloading (Compile-Time Polymorphism) is the OOP principle being used.
     public static int SumLetters (NumericalExpression n){
         // The method calls ConvertToString() method on numbers from 0 to @n: NumericalExpression and counts how many letters are needed without spaces.
 
@@ -90,7 +84,7 @@ public class NumericalExpression
         }
 
         int charCounter = 0;
-        for (long i = 0; i <= n.number; i++)
+        for (ulong i = 0; i <= n.number; i++)
         {
             string word = ConvertToString(i).Replace(" ", "");
             charCounter += word.Length;
@@ -99,8 +93,8 @@ public class NumericalExpression
         return charCounter;
     } 
 
-    private static string ConvertToString (long n){
-        // The method uses recursion technique to convert a @number: long to its word form.
+    private static string ConvertToString (ulong n){
+        // The method uses recursion technique to convert a @number: ulong to its word form.
 
         // Get translations based on selected language.
         string[] unitsArray = GetUnitsArray(selectedLanguage);
@@ -116,7 +110,7 @@ public class NumericalExpression
         if (n < 0)
             return "[-] Negative numbers are yet to be supported.";
 
-        string retVal = "";
+        StringBuilder retVal = new();
 
         // Goes over each multiplier in the list and runs recursion on it if the condition returns True.
         for (int i = multipliers.Length - 1; i >= 0 ; i--)
@@ -142,7 +136,7 @@ public class NumericalExpression
                     multiplierTexts[^1] = newNumberName;
                     SetMultiplierTextsTranslations(selectedLanguage, multiplierTexts);
                 } finally{
-                    retVal += ConvertToString(n / multipliers[i]) + $" {multiplierTexts[i]} ";
+                    retVal.Append(ConvertToString(n / multipliers[i]) + $" {multiplierTexts[i]} ");
                     n %= multipliers[i];
                 }
             }            
@@ -151,16 +145,17 @@ public class NumericalExpression
         // Checks if there are any Tens or Units.
         if (n > 0){
             if (n < 20)
-                retVal += unitsArray[n];
+                retVal.Append(unitsArray[n]);
             else{
-                retVal += tensArray[(n / 10)];
+                retVal.Append(tensArray[(n / 10)]);
                 if ((n % 10) > 0)
-                    retVal += " " + unitsArray[(n % 10)];
+                    retVal.Append(" ");
+                    retVal.Append(unitsArray[(n % 10)]);
             }
         }
 
         // Returns the result and remove unnecessary double spaces.
-        return retVal.Replace("  ", " ");
+        return retVal.ToString().Replace("  ", " ");
     } 
 
     public static void SetMaxNumber(){
@@ -169,10 +164,10 @@ public class NumericalExpression
         Console.WriteLine($"[!] The current max number is >> {maxNumber}");
 
         Console.Write("[!] New max number (100, 1000, 1000000, etc.) >>> ");
-        long newMaxNumber = Convert.ToInt64(Console.ReadLine());
+        ulong newMaxNumber = ulong.Parse(Console.ReadLine());
 
         if ( (newMaxNumber / multipliers[^1] != 1000) || (newMaxNumber % 10 != 0) ){
-            Console.WriteLine("[-] Insert a number that is bigger by jumps of 1000.");
+            Console.WriteLine("[-] Insert a number that is bigger by 1000.");
             return;
         }
 
@@ -208,18 +203,21 @@ public class NumericalExpression
     public static void SelectLanguage(){
         // The method allows the user to switch between supported languages.
 
-        string supportedLanguagesRetVal = "";
+        StringBuilder supportedLanguagesRetVal = new();
 
         for (int i = 0; i < supportedLanguages.Length; i++)
         {
             if (i == supportedLanguages.Length - 1){
-                supportedLanguagesRetVal += "and " + supportedLanguages[i] + ".";
+                supportedLanguagesRetVal.Append("and ");
+                supportedLanguagesRetVal.Append(supportedLanguages[i]);
+                supportedLanguagesRetVal.Append('.');
             }else{
-                supportedLanguagesRetVal += supportedLanguages[i] + ", ";
+                supportedLanguagesRetVal.Append(supportedLanguages[i]);
+                supportedLanguagesRetVal.Append(", ");
             }
         }
 
-        Console.WriteLine($"[!] Current supported languages >> {supportedLanguagesRetVal}");
+        Console.WriteLine($"[!] Current supported languages >> {supportedLanguagesRetVal.ToString()}");
         Console.Write("[!] Select a language >>> ");
         string newSelected = UTF8ReadLine();
 
@@ -241,18 +239,21 @@ public class NumericalExpression
     public static void AddLanguage(){
         // The method allows the client to add additional languages to the class
 
-        string supportedLanguagesRetVal = "";
+        StringBuilder supportedLanguagesRetVal = new();
 
         for (int i = 0; i < supportedLanguages.Length; i++)
         {
             if (i == supportedLanguages.Length - 1){
-                supportedLanguagesRetVal += "and " + supportedLanguages[i] + ".";
+                supportedLanguagesRetVal.Append("and ");
+                supportedLanguagesRetVal.Append(supportedLanguages[i]);
+                supportedLanguagesRetVal.Append('.');
             }else{
-                supportedLanguagesRetVal += supportedLanguages[i] + ", ";
+                supportedLanguagesRetVal.Append(supportedLanguages[i]);
+                supportedLanguagesRetVal.Append(", ");
             }
         }
 
-        Console.WriteLine($"[!] Current supported languages >> {supportedLanguagesRetVal}");
+        Console.WriteLine($"[!] Current supported languages >> {supportedLanguagesRetVal.ToString()}");
         Console.Write("[!] New language name >>> ");
         string languageName = UTF8ReadLine();
 
@@ -262,7 +263,7 @@ public class NumericalExpression
         }
 
         Console.WriteLine("[!] Insert a name for the following fields");
-        Console.WriteLine("______________________________________________");
+        Console.WriteLine("__________________________________________");
 
         // Get new translations for the new language.
         string[] unitsArray = GetUnitsArray("en");
@@ -307,11 +308,8 @@ public class NumericalExpression
     public static string UTF8ReadLine(){
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-        // Console.InputEncoding = Encoding.GetEncoding("Windows-1255");
-        // Console.OutputEncoding = Encoding.GetEncoding("Windows-1255");
-
-        Console.OutputEncoding = Encoding.GetEncoding("UTF-16");
-        Console.InputEncoding = Encoding.GetEncoding("UTF-16");
+        Console.OutputEncoding = Encoding.GetEncoding(encodingFormat);
+        Console.InputEncoding = Encoding.GetEncoding(encodingFormat);
 
         StringBuilder sb = new();
         sb.Append(Console.ReadLine());
@@ -323,8 +321,8 @@ public class NumericalExpression
     public override string ToString()
     {  
         // Allows UTF8 chars in the Program Console.
-        Console.OutputEncoding = Encoding.GetEncoding("UTF-16");
-        Console.InputEncoding = Encoding.GetEncoding("UTF-16");
+        Console.OutputEncoding = Encoding.GetEncoding(encodingFormat);
+        Console.InputEncoding = Encoding.GetEncoding(encodingFormat);
 
         return ConvertToString(this.number);
     }
