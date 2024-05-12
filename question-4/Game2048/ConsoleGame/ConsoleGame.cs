@@ -55,7 +55,33 @@ public class ConsoleGame : Game
     private void MovementManager(){
         // The method will take care of the code regarding the movement.
 
+        bool restartGame = false, flag = true;
         ConsoleKeyInfo pressedKey = Console.ReadKey(true);
+
+        if (IsGameWon()){
+            menu.EndMenu();
+
+            while (flag){
+                pressedKey = Console.ReadKey(true);
+
+                switch(pressedKey.Key){
+                    case ConsoleKey.Enter:
+                        // Start the game.
+                        flag = SaveRetryGame();
+                        restartGame = !flag;
+                        break;
+
+                    case ConsoleKey.S:
+                        // Save and go back.
+                        flag = SaveGoBackOption();
+                        break;
+                }
+            }
+
+            if (restartGame)
+                StartGame();
+        }
+
 
         switch (pressedKey.Key)
         {
@@ -74,29 +100,22 @@ public class ConsoleGame : Game
             case ConsoleKey.RightArrow:
                 Move(Direction.Right);
                 break;
+
+            default:
+                Console.Clear();
+
+                Console.ForegroundColor = ConsoleColor.DarkCyan; 
+                Console.Write($"SCORE: {Points}");
+
+                Console.ForegroundColor = ConsoleColor.Blue; 
+                Console.WriteLine(GameBoard);
+
+                Console.ForegroundColor = ConsoleColor.Magenta; 
+                Console.WriteLine("Use the arrow keys to play\n");
+                Console.ForegroundColor = ConsoleColor.Gray; 
+
+                break;
         }
-    }
-
-    private bool IsGameWon(){
-        // The method checks if the client reached the winning goal.
-
-        if (GameBoard.WonTheGame){
-            Console.Clear();
-
-            Console.ForegroundColor = ConsoleColor.Green; 
-            Console.WriteLine("You Won!\n");
-
-            Console.ForegroundColor = ConsoleColor.DarkCyan; 
-            Console.WriteLine($"Score - {Points}");
-            Console.WriteLine($"Time: {GameBoard.Stopper}");
-            Console.ForegroundColor = ConsoleColor.Gray; 
-
-            Console.WriteLine();
-
-            return true;
-        }
-
-        return false;
     }
 
     private void GameLost(){
